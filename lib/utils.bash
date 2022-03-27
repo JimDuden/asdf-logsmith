@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-# TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for logsmith.
 GH_REPO="https://github.com/otto-de/logsmith"
 TOOL_NAME="logsmith"
 TOOL_TEST="logsmith --version"
@@ -31,8 +30,6 @@ list_github_tags() {
 }
 
 list_all_versions() {
-  # TODO: Adapt this. By default we simply list the tag names from GitHub releases.
-  # Change this function if logsmith has other means of determining installable versions.
   list_github_tags
 }
 
@@ -40,7 +37,12 @@ download_release() {
   local version filename url
   version="$1"
   filename="$2"
-  url="$GH_REPO/archive/refs/tags/${version}.tar.gz"
+  os='linux'
+  if [[ $OSTYPE == 'darwin'* ]]; then
+    os='darwin'
+  fi
+
+  url="$GH_REPO/releases/download/${version}/logsmith_${os}_${version}.zip"
 
   echo "* Downloading $TOOL_NAME release $version..."
   curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
